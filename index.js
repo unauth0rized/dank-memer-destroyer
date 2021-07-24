@@ -9,7 +9,7 @@ process.on('unhandledRejection', async (reason, p) => {
 })
 
 const ClientManager = require('./src/ClientManager')
-const manager = new ClientManager(require('./config/tokens.json'), require('./config/activeHours.json'), "867806640852697118", "852677579827314708")
+const manager = new ClientManager(require('./config/tokens.json'), 3, "867806640852697118", "852677579827314708")
 manager.SetupWorkership()
 manager.StartWorkership()
 /*client.on('ready', async () => {
