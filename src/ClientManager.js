@@ -67,7 +67,7 @@ class ClientManager {
         }
         
       })
-      Worker.SetHandler('message', async (message) => {
+     /* Worker.SetHandler('message', async (message) => {
         if (Worker.cooldown) return;
         if (message.author.bot && message.embeds.length > 0 && message.embeds[0].description && message.embeds[0].description.includes("to answer with the correct letter") && message.embeds[0].author.name.includes(Worker.client.user.username) && message.channel.id === Worker.channel.id) {
           
@@ -75,7 +75,7 @@ class ClientManager {
 
 
 
-      })
+      })*/
       setInterval(async () => {
         try {
           if (Worker.cooldown) return;
