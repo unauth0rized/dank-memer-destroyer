@@ -1,10 +1,3 @@
-const express = require('express');
-const app = express();
-const port = 80;
-app.get('/', (req, res) => res.send('#'));
-app.listen(port, () => {});
-const Discord = require('discord.js')
-global.hook = new Discord.WebhookClient('867880488760115210', 'ZN8zb2pOv-lh47PXzYaVN2agclmkWSPPy7NTLDS44fDlJjuu8895x8J8uVG6ketmXknX');
 global.uncaughtExceptions = []
 process.on('uncaughtException', async (err) => {
   global.uncaughtExceptions.push(err.toString() + "\n" + err.stack)
@@ -14,6 +7,7 @@ process.on('unhandledRejection', async (reason, p) => {
   global.uncaughtExceptions.push(reason.toString())
   require('./src/utility/logger.js').error(reason.toString())
 })
+
 const ClientManager = require('./src/ClientManager')
 const manager = new ClientManager(require('./config/tokens.json'), require('./config/activeHours.json'), "867806640852697118", "852677579827314708")
 manager.SetupWorkership()

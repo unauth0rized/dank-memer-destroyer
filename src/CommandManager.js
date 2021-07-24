@@ -8,7 +8,6 @@ class CommandList {
         })
         
         this.Commands = modules
-        console.log(this.Commands)
         return modules
     }
     async GetCommands() {
