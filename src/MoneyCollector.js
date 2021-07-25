@@ -30,7 +30,7 @@ class MoneyCollector {
      * @returns {undefined} Nothing
      */
     constructor(token, activeHours, guildId, ownerId) {
-        this.cooldown = false
+        this.cooldown = true
         this.activeHours = activeHours
         this.guildId = guildId
         this.ownerId = ownerId
