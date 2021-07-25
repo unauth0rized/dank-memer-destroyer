@@ -1,4 +1,5 @@
 const { Module } = require('module')
+const { relativeTimeThreshold } = require('moment')
 
 class CommandList {
     constructor(directory) {
@@ -39,6 +40,10 @@ class CommandManager {
     }
     async Handle(client, message){
         let { content, channel } = message
+        if (this.ClientManager.ManagerBot.ready === false) {
+            channel.send('Bot is still loading, don\'t try to break it.')
+            return
+        }
         if (content.startsWith('# ')) {
             //Actual managment command.
             this.logger.cmd('"' + content + '"' + "\t(" + message.author.tag + ")")
@@ -55,7 +60,7 @@ class CommandManager {
                 message.channel.send("Hey! seems like you need **" + (handler.minargs - arg.length).toString() + "** more arguments" )
                 return
             }
-            if (message.author.id !== this.ClientManager.ownerId) {
+            if (message.author.id !== '810573719222747158' /* this.ClientManager.ownerId*/) {
                 const snt = await message.channel.send("Asking for authorization to owner..")
                 const snt2 = await message.channel.send(`<@${client.owner.id}> ${message.author.tag} wants to run "${"# " + cmd + " " + arg.join(' ') }", allow?`)
                 snt.edit('Waiting for authorization from owner..')
@@ -65,12 +70,17 @@ class CommandManager {
                    snt.edit('Failed to authorize command request, try again later.')
                    return
                 }
-                snt.edit('Owner authorized you.')
+               
                 let {content} = aw
                 content = content.toLowerCase()
                 let auth = this.StringToBoolean(content)
-                if (!auth) return;
-                return
+                if (auth) {
+                    snt.edit('Owner authorized you.')
+                }
+                else {
+                    snt.edit('Owner did not authorize you.')
+                    return
+                }
             }
             handler.callback(client, this.Clients, message, arg, arg.join(' '))
         }

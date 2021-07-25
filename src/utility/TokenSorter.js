@@ -24,8 +24,8 @@ class TokenSorter {
         let errored = false
         let ready = false
         let client = new discord.Client({ _tokenType: '' })
-        client.on('ready', () => { /*logger.debug(`${client.user.tag}'s guilds successfully fetched!`);*/ready = true })
-        client.login(token).catch(() =>  {} /*logger.warn(token + ' is phone locked.')*/)
+        client.on('ready', () => { logger.debug(`${client.user.tag}'s guilds successfully fetched!`);ready = true })
+        client.login(token).catch(() => {} /*logger.warn(token + ' is phone locked.')*/)
         do {
             await sleep(1000)
             //logger.log('Awaiting guilds for ' + token + '\t' + ready)
