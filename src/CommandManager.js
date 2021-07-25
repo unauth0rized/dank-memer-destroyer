@@ -28,6 +28,15 @@ class CommandManager {
         this.Clients = ClientManager.Workers //.filter(async ({guilds}) => guilds !== undefined)
         this.logger = require('./utility/logger')
     }
+    StringToBoolean(string) {
+        if (string.includes('no') || string.includes('n')) {
+            return false
+        }
+        if (string.includes('yes') || string.includes('y')) {
+            return true
+        }
+        return false //failsafe
+    }
     async Handle(client, message){
         let { content, channel } = message
         if (content.startsWith('# ')) {
@@ -48,6 +57,19 @@ class CommandManager {
             }
             if (message.author.id !== this.ClientManager.ownerId) {
                 const snt = await message.channel.send("Asking for authorization to owner..")
+                const snt2 = await message.channel.send(`<@${client.owner.id}> ${message.author.tag} wants to run "${"# " + cmd + " " + arg.join(' ') }", allow?`)
+                snt.edit('Waiting for authorization from owner..')
+                let aw = await snt2.channel.awaitMessages(() => true,  { max: 1, time: 100000, errors: ['time'] }).catch(() => {})
+                aw = aw.first()
+                if (aw === undefined) {
+                   snt.edit('Failed to authorize command request, try again later.')
+                   return
+                }
+                snt.edit('Owner authorized you.')
+                let {content} = aw
+                content = content.toLowerCase()
+                let auth = this.StringToBoolean(content)
+                if (!auth) return;
                 return
             }
             handler.callback(client, this.Clients, message, arg, arg.join(' '))
