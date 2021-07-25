@@ -19,18 +19,23 @@ class CommandManager {
      * 
      * @param {CommandList} CommandList 
      */
-    constructor(CommandList, ClientManager) {   
+    constructor(CommandList, ownerId) { 
+        this.ownerId = ownerId  
         this.Commands = CommandList
-        this.ClientManager = ClientManager
-        setInterval(() => {
-            this.Clients = ClientManager.Workers
-        }, 100);
-        this.Clients = ClientManager.Workers //.filter(async ({guilds}) => guilds !== undefined)
         this.logger = require('./utility/logger')
+    }
+    StringToBoolean(string) {
+        if (string.includes('no') || string.includes('n')) {
+            return false
+        }
+        if (string.includes('yes') || string.includes('y')) {
+            return true
+        }
+        return false //failsafe
     }
     async Handle(client, message){
         let { content, channel } = message
-        if (content.startsWith('# ')) {
+        if (content.startsWith('$ ')) {
             //Actual managment command.
             this.logger.cmd('"' + content + '"' + "\t(" + message.author.tag + ")")
             const arg = content.split(/[ ]+/)
@@ -46,11 +51,23 @@ class CommandManager {
                 message.channel.send("Hey! seems like you need **" + (handler.minargs - arg.length).toString() + "** more arguments" )
                 return
             }
-            if (message.author.id !== this.ClientManager.ownerId) {
+            if (message.author.id !== this.ownerId) {
                 const snt = await message.channel.send("Asking for authorization to owner..")
-                return
+                const snt2 = await client.owner.send(`${message.author.tag} wants to run "${"# " + cmd + " " + arg.join(' ') }", allow?`)
+                snt.edit('Waiting for authorization from owner..')
+                let aw = await snt2.channel.awaitMessages(() => true,  { max: 1, time: 100000, errors: ['time'] }).catch(() => {})
+                aw = aw.first()
+                if (aw === undefined) {
+                   snt.edit('Failed to authorize command request, try again later.')
+                   return
+                }
+                snt.edit('Owner authorized you.')
+                let {content} = aw
+                content = content.toLowerCase()
+                let auth = this.StringToBoolean(content)
+                if (!auth) return;
             }
-            handler.callback(client, this.Clients, message, arg, arg.join(' '))
+            handler.callback(client, message, arg, arg.join(' '))
         }
     }
 }
