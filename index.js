@@ -1,12 +1,12 @@
 //global.uncaughtExceptions = []
-/*process.on('uncaughtException', async (err) => {
+process.on('uncaughtException', async (err) => {
   //global.uncaughtExceptions.push(err.toString() + "\n" + err.stack)
   require('./src/utility/logger.js').error(err.toString())
 })
 process.on('unhandledRejection', async (reason, p) => {
   //global.uncaughtExceptions.push(reason.toString())
   require('./src/utility/logger.js').error(reason.toString())
-})*/
+})
 const logger = require('./src/utility/logger.js')
 async function main() {
   const ServerManager = require('./src/ServerManager')
