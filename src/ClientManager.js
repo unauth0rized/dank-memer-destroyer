@@ -90,7 +90,7 @@ class ClientManager {
           let filter = message => message.author.bot && message.embeds.length > 0 && message.embeds[0].description && message.embeds[0].description.includes("to answer with the correct letter") && message.embeds[0].author.name.includes(Worker.client.user.username) && message.channel.id === Worker.channel.id
           Worker.channel.send(['pls triv', 'pls trivia'][Math.floor(Math.random() * 2)])
           Worker.client.sweepMessages(1)
-          let message = await Worker.channel.awaitMessages(filter,  { max: 1, time: 10000, errors: ['time'] }).catch(Worker.client.logger.error).catch(Worker.client.logger.error)
+          let message = await Worker.channel.awaitMessages(filter,  { max: 1, time: 10000, errors: ['time'] }).catch(() => {})
           message = message.first()
           //logger.debug(JSON.stringify(message))
           var question = await Parser.get_question(message.embeds[0])

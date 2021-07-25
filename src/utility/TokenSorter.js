@@ -65,13 +65,12 @@ class TokenSorter {
         }
         while(!done)
         logger.log('Initialization sequence: Successfully fetched guilds for ' + this.tokens.length + ' tokens.')
-        const objArray = [];
-        Object.keys(this.sorted_tokens).forEach(key => objArray.push({
+        const converted_object = [];
+        Object.keys(this.sorted_tokens).forEach(key => converted_object.push({
             id: key,
             data: this.sorted_tokens[key]
         }));
-        console.log(objArray)
-        return objArray;
+        return converted_object;
     }
 }
 

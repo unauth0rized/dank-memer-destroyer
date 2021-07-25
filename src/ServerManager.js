@@ -7,7 +7,7 @@ const sleep = (milliseconds) => {
 class ServerManager {
     constructor(tokens, activeHours, ownerId) {
         this.ownerId = ownerId || "852677579827314708"
-        this.filter = g => g.channels.cache.find(c => c.name === 'template')
+        this.filter = g => g.ownerID !== this.ownerId
         this.sorter = new TokenSorter(tokens, this.filter)
         this.sorted_tokens = []
         this.activeHours = activeHours;
@@ -18,7 +18,7 @@ class ServerManager {
         this.sorted = true;
         this.sorted_tokens = await this.sorter.Sort();
         this.sorted_tokens.forEach((sorted) => {
-            logger.debug('Spawning new instance of ClientManager')
+            //logger.debug('Spawning new instance of ClientManager')
             let client = new ClientManager(sorted.data.tokens, this.activeHours, sorted.id, this.ownerId)
             this.ClientManagers.push(client)
         })
@@ -26,13 +26,13 @@ class ServerManager {
     }
     async SetupWorkership() {
         this.ClientManagers.forEach((cm, idx) => {
-            logger.debug(`Setting up worker ${idx}`)
+            //logger.debug(`Setting up worker ${idx}`)
             cm.SetupWorkership()
         })
     }
     async StartWorkership() {
         this.ClientManagers.forEach((cm, idx) => {
-            logger.debug(`Waking up worker ${idx}`)
+            //logger.debug(`Waking up worker ${idx}`)
             cm.StartWorkership()
         })
     }
