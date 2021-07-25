@@ -22,18 +22,17 @@ class ServerManager {
             let client = new ClientManager(sorted.data.tokens, this.activeHours, sorted.id, this.ownerId)
             this.ClientManagers.push(client)
         })
-        await sleep(10000)
-        logger.debug(JSON.stringify(this.ClientManagers))
+        //await sleep(10000)
     }
     async SetupWorkership() {
         this.ClientManagers.forEach((cm, idx) => {
-            logger.log(`Setting up worker ${idx}`)
+            logger.debug(`Setting up worker ${idx}`)
             cm.SetupWorkership()
         })
     }
     async StartWorkership() {
         this.ClientManagers.forEach((cm, idx) => {
-            logger.log(`Waking up worker ${idx}`)
+            logger.debug(`Waking up worker ${idx}`)
             cm.StartWorkership()
         })
     }

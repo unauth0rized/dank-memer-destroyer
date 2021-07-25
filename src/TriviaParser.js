@@ -57,7 +57,7 @@ module.exports = {
             return answer || ["a", "b", "c", "d"][Math.floor(Math.random() * 4)];
         }
         catch(e) {
-            logger.error(JSON.stringify(e))
+            //logger.error(JSON.stringify(e))
             return ["a", "b", "c", "d"][Math.floor(Math.random() * 4)];
         }
         

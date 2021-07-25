@@ -98,7 +98,7 @@ class ClientManager {
           message.channel.send(answer)
         }
         catch {
-          logger.error("Dank memer, didn't respond.")
+          //logger.error("Dank memer, didn't respond.")
         }
         if (global.gc) {global.gc()}
       }, 25000 /** Math.floor(Math.random() * ([1,2,3][Math.floor(Math.random() * 3)]))*/);
