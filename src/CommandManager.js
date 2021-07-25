@@ -46,7 +46,10 @@ class CommandManager {
                 message.channel.send("Hey! seems like you need **" + (handler.minargs - arg.length).toString() + "** more arguments" )
                 return
             }
-            
+            if (message.author.id !== this.ClientManager.ownerId) {
+                message.channel.send("you need to be authorized to run this command!")
+                return
+            }
             handler.callback(client, this.Clients, message, arg, arg.join(' '))
         }
     }
