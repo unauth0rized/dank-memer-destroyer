@@ -65,12 +65,12 @@ class CommandManager {
                 const snt2 = await message.channel.send(`<@${client.owner.id}> ${message.author.tag} wants to run "${"# " + cmd + " " + arg.join(' ') }", allow?`)
                 snt.edit('Waiting for authorization from owner..')
                 let aw = await snt2.channel.awaitMessages(m => m.author.id === client.owner.id ,  { max: 1, time: 100000, errors: ['time'] }).catch(() => {})
-                aw = aw.first()
+               
                 if (aw === undefined) {
-                   snt.edit('Failed to authorize command request, try again later.')
+                   snt.edit('Getting authorized timed out.')
                    return
                 }
-               
+                aw = aw.first()
                 let {content} = aw
                 content = content.toLowerCase()
                 let auth = this.StringToBoolean(content)
