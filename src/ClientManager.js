@@ -1,3 +1,4 @@
+global.Discord = require('discord.js-light')
 const MoneyCollector = require('./MoneyCollector');
 const Axios = require('axios');
 const { CommandManager, CommandList } = require('./CommandManager');
@@ -37,11 +38,12 @@ class ClientManager {
     this.tokens = [...new Set(tokens)]
   }
   ActiveHours(ammount = 3) {
+    return ammount;
     const PossibleActiveHours = [0,1,2,3,4,5,6,7,8,9,10,13,14,15,16,17,18,19,20,21,22,23,0,1] // the last 2 ones is for all being 3 items long so hour 23 gets logged
     let chunks = PossibleActiveHours.chunks(ammount)
     chunks = chunks.filter(chunk => chunk.length === ammount)
     let chunk = chunks[Math.floor(Math.random() * chunks.length)]
-    logger.debug(`Generated pseudo-random active hours ${JSON.stringify(chunk)}`)
+    //logger.debug(`Generated pseudo-random active hours ${JSON.stringify(chunk)}`)
     return chunk
   }
   async SetupWorkership() {
@@ -52,9 +54,13 @@ class ClientManager {
       this.Workers.push(Worker)
       const { client } = Worker
       client.logger = logger
+      Worker.once('loginError', async () => {
+        Worker.client.destroy()
+        this.Workers = this.Workers.filter(w => w !== Worker)
+      })
       Worker.SetHandler('ready', async () => {
 
-        Worker.client.logger.ready(client.user.tag + ' is ready.')
+        //Worker.client.logger.ready(client.user.tag + ' is ready.')
         if (client.guilds.cache.get(this.guildId) == undefined) {
           console.log(client.user.tag, "Not in server.")
           return
@@ -78,12 +84,12 @@ class ClientManager {
 
 
       })*/
-      setInterval(async () => {
+      client.setInterval(async () => {
         try {
           if (Worker.cooldown || !Worker.ready) return;
           let filter = message => message.author.bot && message.embeds.length > 0 && message.embeds[0].description && message.embeds[0].description.includes("to answer with the correct letter") && message.embeds[0].author.name.includes(Worker.client.user.username) && message.channel.id === Worker.channel.id
           Worker.channel.send(['pls triv', 'pls trivia'][Math.floor(Math.random() * 2)])
-          Worker.client.sweepMessages(30)
+          Worker.client.sweepMessages(1)
           let message = await Worker.channel.awaitMessages(filter,  { max: 1, time: 10000, errors: ['time'] }).catch(Worker.client.logger.error).catch(Worker.client.logger.error)
           message = message.first()
           //logger.debug(JSON.stringify(message))
@@ -94,13 +100,18 @@ class ClientManager {
         catch {
           logger.error("Dank memer, didn't respond.")
         }
-      }, 20000 /** Math.floor(Math.random() * ([1,2,3][Math.floor(Math.random() * 3)]))*/);
+        if (global.gc) {global.gc()}
+      }, 25000 /** Math.floor(Math.random() * ([1,2,3][Math.floor(Math.random() * 3)]))*/);
     })
     this.CommandManager = new CommandManager(new CommandList(__dirname + "/commands"), this)
     this.ManagerBot = new ManagerBot(this.ManagerToken, this.Workers, this.ownerId, this.ActiveHours(this.activeHours))
+    this.ManagerBot.client.logger = logger
     this.ManagerBot.client.on("message", async (message) => {
       await this.CommandManager.Handle(this.ManagerBot.client, message)
     })
+    this.ManagerBot.client.setInterval(async () => {
+      if (global.gc) {global.gc()}
+    }, 10000)
     this.ManagerBot.Run()
     this.tokens = undefined
   }

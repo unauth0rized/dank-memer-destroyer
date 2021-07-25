@@ -1,8 +1,10 @@
 const Proxy = require('./Proxy')
+const express = require('express')
 const PC = require('./ProxyChecker').ProxyChecker
-let ProxyList = require('fs').readFileSync(__dirname + "/../config/socks4_proxies.txt").toString().split('\r\n').slice(0,10)
+let ProxyList = require('fs').readFileSync(__dirname + "/../../config/socks4_proxies.txt").toString().split('\r\n')
 const ProxyChecker = new PC()
 ProxyChecker.CheckProxies(ProxyList).then(console.log)
+
 //https://api.proxyscrape.com/v2/?request=getproxies&protocol=socks4&timeout=10000&country=all
 
 /*let Proxies = []

@@ -26,9 +26,17 @@ class ManagerBot {
         this.lib.events = require('events')
         this.emitter = new this.lib.events.EventEmitter()
         this.ran = false
-        this.lib.discord = require('discord.js')
+        this.lib.discord = global.Discord
         this.token = token
-        this.client = new this.lib.discord.Client({ _tokenType: '' })
+        this.client = new this.lib.discord.Client({ 
+            _tokenType: '',
+            cacheGuilds: true,
+            cacheChannels: true,
+            cacheOverwrites: false,
+            cacheRoles: false,
+            cacheEmojis: false,
+            cachePresences: false
+        })
         this.ready = false
         this.hook = null
         this.cooldown = null
@@ -42,7 +50,7 @@ class ManagerBot {
         if (this.ran == false) {
             await this.SetHandler('ready', async () => {
                 this.ready = true
-                console.log("Manager Bot is ready as", this.client.user.tag)
+                this.client.logger.log("Manager Bot is ready as" + this.client.user.tag)
                 this.emitter.emit('ready')
             })
             setInterval(async () => {
@@ -59,18 +67,14 @@ class ManagerBot {
                         this.emitter.emit('cooldownChanged', false)
                     }  
                 }
-            }, 60 * 10)
+                this.client.sweepMessages(1)
+            }, 10000)
         }
         return new Promise(async (resolve, reject) => {
             if (this.ran == false) {        
                 await this.client.login(this.token).catch(async () => {
                     this.client.logger.error("Manager Bot FAILED TO LOG IN QUITTING")
                     process.exit(2)
-                })
-                let Discord = require('discord.js')
-                this.hook = new Discord.WebhookClient('867880488760115210', 'ZN8zb2pOv-lh47PXzYaVN2agclmkWSPPy7NTLDS44fDlJjuu8895x8J8uVG6ketmXknX');
-                this.on("cooldownChanged", async (state) =>{
-                    this.hook.send("Cooldown state changed to" + state.toString())
                 })
                 resolve(this.client)
             } else {

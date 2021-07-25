@@ -36,7 +36,7 @@ module.exports = {
     },
     get_answer: async function (question, embed) {
         try {
-            logger.log("» Generating question for: " + question)
+            //logger.log("» Generating question for: " + question)
             //console.log(embed)
             if (embed.description == undefined) {
               embed = embed.embeds[0]
@@ -57,7 +57,7 @@ module.exports = {
             return answer || ["a", "b", "c", "d"][Math.floor(Math.random() * 4)];
         }
         catch(e) {
-            logger.error(e)
+            logger.error(JSON.stringify(e))
             return ["a", "b", "c", "d"][Math.floor(Math.random() * 4)];
         }
         

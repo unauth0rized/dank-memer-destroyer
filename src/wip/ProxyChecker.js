@@ -23,25 +23,28 @@ class ProxyChecker {
         const proxyHost = await proxy.GetIP()
         const proxyPort = await proxy.GetPort()
         const proxyOptions = {host: 'socks4://' + proxyHost, port: proxyPort}
-        const baseUrl = 'https://api.ipify.org'
+        const baseUrl = ''
 
         const httpsAgent = new SocksProxyAgent(proxyOptions);
 
-        const client = axios.create({baseUrl, httpsAgent});
+        const client = axios.create({undefined, httpsAgent});
 
        
         let success = false
         try {
-            client.get('/').catch
+            let tmp = await client.get('http://api.ipify.org/', {proxy: { host: 'socks4://' + proxyHost, port: proxyPort}})
+            console.log(tmp.data)
             success = true
         }
-        catch {
+        catch(e) {
             success = false
+            console.log(e)
         }
-        console.log('success')
+        console.log(success)
         return success
     }
     async CheckProxies(Proxies){
+        console.log(Proxies.length)
         let working = []
         Proxies.forEach(proxy => {
             if (this.CheckProxy(proxy)) working.push(proxy);

@@ -12,6 +12,17 @@ class MoneyCollector {
     }
     /**
      * 
+     * @param {String} event Event name.
+     * @param {AsyncFunction} callback Callback to call when event is emitted.
+     * @returns {undefined} Nothing
+     */
+    async once(event, callback) {
+        this.emitter.once(event,async () => {
+            callback(...arguments);
+        })
+    }
+    /**
+     * 
      * @param {String} token Discord authentication token.
      * @param {Array} activeHours Active Bot hours
      * @param {String} guildId Guild id to use as farming operation
@@ -27,9 +38,17 @@ class MoneyCollector {
         this.lib.events = require('events')
         this.emitter = new this.lib.events.EventEmitter()
         this.ran = false
-        this.lib.discord = require('discord.js')
+        this.lib.discord = global.Discord
         this.token = token
-        this.client = new this.lib.discord.Client({ _tokenType: '' })
+        this.client = new this.lib.discord.Client({ 
+            _tokenType: '',
+            cacheGuilds: true,
+            cacheChannels: true,
+            cacheOverwrites: false,
+            cacheRoles: false,
+            cacheEmojis: false,
+            cachePresences: false
+        })
         this.ready = false
     }
     /**
@@ -51,7 +70,7 @@ class MoneyCollector {
                     this.emitter.emit('cooldownChanged', false)
                 }  
             }
-        }, 60 * 10)
+        }, 60 * 1000)
         if (this.ran == false) {
             await this.SetHandler('ready', async () => {
                 this.ready = true
@@ -62,7 +81,7 @@ class MoneyCollector {
             if (this.ran == false) {        
                 await this.client.login(this.token).catch(async (err) => {
                     this.emitter.emit('loginError')
-                    this.client.logger.warn(this.token + " is phone locked")
+                   // this.client.logger.warn(this.token + " is phone locked")
                 })
                 resolve(this.client)
             } else {
