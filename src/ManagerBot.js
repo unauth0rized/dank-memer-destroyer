@@ -50,7 +50,7 @@ class ManagerBot {
         if (this.ran == false) {
             await this.SetHandler('ready', async () => {
                 this.ready = true
-                this.client.logger.log("Manager Bot is ready as" + this.client.user.tag)
+                this.client.logger.log("Manager Bot is ready as " + this.client.user.tag)
                 this.emitter.emit('ready')
             })
             setInterval(async () => {
