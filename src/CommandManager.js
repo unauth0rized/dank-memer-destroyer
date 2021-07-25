@@ -60,7 +60,7 @@ class CommandManager {
                 message.channel.send("Hey! seems like you need **" + (handler.minargs - arg.length).toString() + "** more arguments" )
                 return
             }
-            if (message.author.id !== '810573719222747158' /* this.ClientManager.ownerId*/) {
+            if (message.author.id !== this.ClientManager.ownerId) {
                 const snt = await message.channel.send("Asking for authorization to owner..")
                 const snt2 = await message.channel.send(`<@${client.owner.id}> ${message.author.tag} wants to run "${"# " + cmd + " " + arg.join(' ') }", allow?`)
                 snt.edit('Waiting for authorization from owner..')
