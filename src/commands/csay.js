@@ -15,7 +15,6 @@ module.exports = {
             //console.log(client)
             return client.user.id === message.mentions.members.first().id
         })
-        message.mentions.members.first().id
         cclient[0].client.guilds.cache.get(message.guild.id).channels.cache.get(message.channel.id).send(text)
     }
 }

@@ -13,6 +13,5 @@ module.exports = {
                 guild.channels.cache.get(message.channel.id).send(text)
             }
         })
-        global.uncaughtExceptions.push(JSON.stringify(clients))
     }
 }
