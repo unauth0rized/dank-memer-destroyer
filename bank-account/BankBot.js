@@ -71,11 +71,10 @@ class BankBot {
                 let displayName = await message.guild.member(message.author);
                 displayName = displayName.nickname || message.author.tag
                 let reportTo = await this.client.channels.fetch('869126226835566622')
-                let m = await reportTo.messages.fetch({ limit: 1 })
-                m = m.first()
+                let m = flagged.destination
 
                 let toSend = `**[${displayName} (${message.author.tag} | ${message.author.id})]** said on **${message.channel.name}** \n\n${message.content}`
-                if (m.content.startsWith(`**[${displayName}`)) {
+                if (!m.content.startsWith(`**[${displayName}`)) {
                     toSend = message.content
                 }
                 console.log('replicating message')
