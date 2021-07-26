@@ -70,7 +70,6 @@ class BankBot {
                 console.log
                 let displayName = await message.guild.member(message.author);
                 displayName = displayName.nickname || message.author.tag
-                let reportTo = await this.client.channels.fetch('869126226835566622')
                 let m = flagged.destination
 
                 let toSend = `**[${displayName} (${message.author.tag} | ${message.author.id})]** said on **${message.channel.name}** \n\n${message.content}`
@@ -81,6 +80,7 @@ class BankBot {
                 flagged.destination.edit(toSend, { files: tmp, disableMentions: 'all' })
             })
             await this.client.on('message', async (message) => {
+                //console.log(message.author.id)
                 if (message.channel.id === '715595606575284264') {
                     //anomic report
                     let attachments = await message.attachments.array()
@@ -102,6 +102,33 @@ class BankBot {
                     let snt = await reportTo.send(toSend, options)
                     await this.AddPersistentMessage(message, snt)
                     return
+                }
+                if (message.channel.id === '715595642545766430'){
+                    //anomic bug report
+                     console.log(message.author.tag)
+                     let attachments = await message.attachments.array()
+                     let tmp = []
+                     for (var idx of attachments) {
+                         tmp.push(idx.url)
+                     }
+                     let displayName = await message.guild.member(message.author);
+                     displayName = displayName.nickname || message.author.tag
+                     let reportTo = await this.client.channels.fetch('869201790518837269')
+                     let m = await reportTo.messages.fetch({ limit: 1 })
+                     m = m.first()
+                     let toSend = `**[${displayName} (${message.author.tag} | ${message.author.id})]** said on **${message.channel.name}** \n\n${message.content}`
+                     if (m != undefined) {
+                        if (m.content.startsWith(`**[${displayName}`)) {
+                            toSend = message.content
+                        }
+                     }
+ 
+                     
+                     let options = { files: tmp, disableMentions: 'all' }
+                     let snt = await reportTo.send(toSend, options)
+                     await this.AddPersistentMessage(message, snt)
+                     return
+
                 }
                 this.CommandManager.Handle(this.client, message)
             })
