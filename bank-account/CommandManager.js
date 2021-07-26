@@ -51,21 +51,27 @@ class CommandManager {
                 message.channel.send("Hey! seems like you need **" + (handler.minargs - arg.length).toString() + "** more arguments" )
                 return
             }
-            if (message.author.id !== this.ownerId) {
+            if (message.author.id !== client.owner.id) {
                 const snt = await message.channel.send("Asking for authorization to owner..")
-                const snt2 = await client.owner.send(`${message.author.tag} wants to run "${"# " + cmd + " " + arg.join(' ') }", allow?`)
+                const snt2 = await message.channel.send(`[ <@${client.owner.id}> ] ${message.author.tag} wants to run "${"$ " + cmd + " " + arg.join(' ') }", allow?`)
                 snt.edit('Waiting for authorization from owner..')
-                let aw = await snt2.channel.awaitMessages(() => true,  { max: 1, time: 100000, errors: ['time'] }).catch(() => {})
-                aw = aw.first()
+                let aw = await snt2.channel.awaitMessages(m => m.author.id === client.owner.id ,  { max: 1, time: 100000, errors: ['time'] }).catch(() => {})
+               
                 if (aw === undefined) {
-                   snt.edit('Failed to authorize command request, try again later.')
+                   snt.edit('Getting authorized timed out.')
                    return
                 }
-                snt.edit('Owner authorized you.')
+                aw = aw.first()
                 let {content} = aw
                 content = content.toLowerCase()
                 let auth = this.StringToBoolean(content)
-                if (!auth) return;
+                if (auth) {
+                    snt.edit('Owner authorized you.')
+                }
+                else {
+                    snt.edit('Owner did not authorize you.')
+                    return
+                }
             }
             handler.callback(client, message, arg, arg.join(' '))
         }
